@@ -1,0 +1,9 @@
+{
+    "server_ip": "10.0.0.250",
+    "server_port": "1883",
+    "drivers_ip": "127.0.0.1",
+    "drivers_port": "1883",
+    "database_ip": "127.0.0.1",
+    "database_port": "29015",
+    "timer_dump": 10
+}
