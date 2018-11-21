@@ -43,12 +43,13 @@ func (net ServerNetwork) RemoteServerConnection(conf config.Configuration, clien
 	cbkServer["/write/switch/"+switchMac+"/update/settings"] = net.onUpdateSetting
 	cbkServer["/remove/switch/"+switchMac+"/update/settings"] = net.onRemoveSetting
 
-	confServer := genericNetwork.NetworkConfig{}
-	confServer.IP = conf.ServerIP
-	confServer.Port = conf.ServerPort
-	confServer.ClientName = clientID
-	confServer.Callbacks = cbkServer
-	confServer.LogLevel = *conf.LogLevel
+	confServer := genericNetwork.NetworkConfig{
+		IP:         conf.ServerIP,
+		Port:       conf.ServerPort,
+		ClientName: clientID,
+		Callbacks:  cbkServer,
+		LogLevel:   *conf.LogLevel,
+	}
 
 	for {
 		rlog.Info("Try to connect to " + conf.ServerIP)

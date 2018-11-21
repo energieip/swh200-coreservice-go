@@ -18,9 +18,10 @@ func ConnectDatabase(ip, port string) (*Database, error) {
 		return nil, err
 	}
 
-	confDb := database.DatabaseConfig{}
-	confDb.IP = ip
-	confDb.Port = port
+	confDb := database.DatabaseConfig{
+		IP:   ip,
+		Port: port,
+	}
 	err = db.Initialize(confDb)
 	if err != nil {
 		rlog.Error("Cannot connect to database " + err.Error())

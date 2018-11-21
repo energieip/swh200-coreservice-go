@@ -26,14 +26,13 @@ func CreateLocalNetwork() (*LocalNetwork, error) {
 //LocalConnection connect service to drivers and services broker
 func (net LocalNetwork) LocalConnection(conf config.Configuration, clientID, switchMac string) error {
 	cbkLocal := make(map[string]func(genericNetwork.Client, genericNetwork.Message))
-
-	confLocal := genericNetwork.NetworkConfig{}
-	confLocal.IP = conf.DriversIP
-	confLocal.Port = conf.DriversPort
-	confLocal.ClientName = clientID
-	confLocal.Callbacks = cbkLocal
-	confLocal.LogLevel = *conf.LogLevel
-
+	confLocal := genericNetwork.NetworkConfig{
+		IP:         conf.DriversIP,
+		Port:       conf.DriversPort,
+		ClientName: clientID,
+		Callbacks:  cbkLocal,
+		LogLevel:   *conf.LogLevel,
+	}
 	return net.Iface.Initialize(confLocal)
 }
 

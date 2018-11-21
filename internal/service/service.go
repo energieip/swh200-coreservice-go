@@ -175,23 +175,23 @@ func (s *CoreService) sendDump() {
 
 func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
 	for _, led := range switchConfig.LedsSetup {
-		url := "/write/switch/" + s.mac + "/led/setup/config"
+		url := "/write/switch/led/setup/config"
 		ledDump, _ := led.ToJSON()
 		s.local.SendCommand(url, ledDump)
 	}
 	for _, led := range switchConfig.LedsConfig {
-		url := "/write/switch/" + s.mac + "/led/update/settings"
+		url := "/write/switch/led/update/settings"
 		ledDump, _ := led.ToJSON()
 		s.local.SendCommand(url, ledDump)
 	}
 
 	for _, sensor := range switchConfig.SensorsSetup {
-		url := "/write/switch/" + s.mac + "/sensor/setup/config"
+		url := "/write/switch/sensor/setup/config"
 		sensorDump, _ := sensor.ToJSON()
 		s.local.SendCommand(url, sensorDump)
 	}
 	for _, sensor := range switchConfig.SensorsConfig {
-		url := "/write/switch/" + s.mac + "/sensor/update/settings"
+		url := "/write/switch/sensor/update/settings"
 		sensorDump, _ := sensor.ToJSON()
 		s.local.SendCommand(url, sensorDump)
 	}
@@ -219,7 +219,7 @@ func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
 		}
 	}
 	if len(addGroups) > 0 {
-		url := "/write/switch/" + s.mac + "/group/setup/config"
+		url := "/write/switch/group/setup/config"
 		inrec, err := json.Marshal(addGroups)
 		if err == nil {
 			dump := string(inrec[:])
@@ -232,7 +232,7 @@ func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
 		}
 	}
 	if len(updateGroups) > 0 {
-		url := "/write/switch/" + s.mac + "/group/update/settings"
+		url := "/write/switch/group/update/settings"
 		inrec, err := json.Marshal(updateGroups)
 		if err == nil {
 			dump := string(inrec[:])
@@ -245,7 +245,7 @@ func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
 		}
 	}
 	if len(deleteGroups) > 0 {
-		url := "/remove/switch/" + s.mac + "/group/update/settings"
+		url := "/remove/switch/group/update/settings"
 		inrec, err := json.Marshal(deleteGroups)
 		if err == nil {
 			dump := string(inrec[:])
@@ -262,7 +262,7 @@ func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
 func (s *CoreService) removeConfiguration(switchConfig core.SwitchConfig) {
 	for _, group := range switchConfig.Groups {
 		dump, _ := group.ToJSON()
-		url := "/remove/switch/" + s.mac + "/group/update/settings"
+		url := "/remove/switch/group/update/settings"
 		s.local.SendCommand(url, dump)
 	}
 
@@ -273,7 +273,7 @@ func (s *CoreService) removeConfiguration(switchConfig core.SwitchConfig) {
 			IsConfigured: &isConfigured,
 		}
 		dump, _ := remove.ToJSON()
-		url := "/write/switch/" + s.mac + "/led/update/settings"
+		url := "/write/switch/led/update/settings"
 		s.local.SendCommand(url, dump)
 	}
 
@@ -283,7 +283,7 @@ func (s *CoreService) removeConfiguration(switchConfig core.SwitchConfig) {
 			IsConfigured: &isConfigured,
 		}
 		dump, _ := remove.ToJSON()
-		url := "/write/switch/" + s.mac + "/sensor/update/settings"
+		url := "/write/switch/sensor/update/settings"
 		s.local.SendCommand(url, dump)
 	}
 }
