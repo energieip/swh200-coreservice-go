@@ -35,7 +35,7 @@ func GetSwitchLeds(db Database, switchMac string) map[string]led.Led {
 	leds := make(map[string]led.Led)
 
 	criteria := make(map[string]interface{})
-	criteria["switchMac"] = switchMac
+	criteria["SwitchMac"] = switchMac
 	ledsStored, err := db.GetRecords(led.DbName, led.TableName, criteria)
 
 	if err == nil && ledsStored != nil {
@@ -55,7 +55,7 @@ func GetSwitchSensors(db Database, switchMac string) map[string]sensor.Sensor {
 	sensors := make(map[string]sensor.Sensor)
 
 	criteria := make(map[string]interface{})
-	criteria["switchMac"] = switchMac
+	criteria["SwitchMac"] = switchMac
 	sensorsStored, err := db.GetRecords(sensor.DbName, sensor.TableName, criteria)
 
 	if err == nil && sensorsStored != nil {
@@ -73,7 +73,7 @@ func GetSwitchSensors(db Database, switchMac string) map[string]sensor.Sensor {
 //GetSensor return the sensor
 func GetSensor(db Database, mac string) *sensor.Sensor {
 	criteria := make(map[string]interface{})
-	criteria["mac"] = mac
+	criteria["Mac"] = mac
 	sensorStored, err := db.GetRecord(sensor.DbName, sensor.TableName, criteria)
 	if err != nil || sensorStored == nil {
 		return nil
@@ -88,7 +88,7 @@ func GetSensor(db Database, mac string) *sensor.Sensor {
 //GetLed return the led
 func GetLed(db Database, mac string) *led.Led {
 	criteria := make(map[string]interface{})
-	criteria["mac"] = mac
+	criteria["Mac"] = mac
 	ledStored, err := db.GetRecord(led.DbName, led.TableName, criteria)
 	if err != nil || ledStored == nil {
 		return nil
@@ -103,12 +103,10 @@ func GetLed(db Database, mac string) *led.Led {
 //GetStatusGroup return the switch groups
 func GetStatusGroup(db Database, runGroup map[int]groupmodel.GroupRuntime) map[int]groupmodel.GroupStatus {
 	groups := make(map[int]groupmodel.GroupStatus)
-
 	groupsStored, err := db.FetchAllRecords(groupmodel.DbStatusName, groupmodel.TableStatusName)
 
 	if err == nil && groupsStored != nil {
 		for _, v := range groupsStored {
-
 			group, err := groupmodel.ToGroupStatus(v)
 			if err != nil {
 				continue

@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-11-21T18:27:25.625050638+01:00
+updated: 2018-11-22T10:04:29.079618141+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -8,7 +8,7 @@ imports:
   subpackages:
   - packets
 - name: github.com/energieip/common-database-go
-  version: 5dfd0359f6b23d059506527826136f1f530bbed3
+  version: 077344c8306ad3e191555a01ec004d6be0e758cb
   subpackages:
   - pkg/database
 - name: github.com/energieip/common-group-go
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go
-  version: 867d463fca72f3e6f3fe49cf5fc625c9fc01dbae
+  version: 82ac620b9b7426ea8b2d53dd21ad0af78318d717
   subpackages:
   - pkg/driverled
 - name: github.com/energieip/common-network-go
@@ -24,7 +24,7 @@ imports:
   subpackages:
   - pkg/network
 - name: github.com/energieip/common-sensor-go
-  version: d750d5444fca38f0235ca3ec82aba641bb2a19fc
+  version: 5c2c9f9a5196b93cf8d3058887e49e6058ab36e4
   subpackages:
   - pkg/driversensor
 - name: github.com/energieip/swh200-service-go
@@ -47,7 +47,7 @@ imports:
 - name: github.com/romana/rlog
   version: f018bc92e7d71f27c04e04cbf008860416c21d01
 - name: github.com/sirupsen/logrus
-  version: 91da99df23e3bad7f384338a5a8f636d04093d9a
+  version: 29d7eb25e8ffa54207ff5a9a5c3d63e95be2cc39
 - name: golang.org/x/crypto
   version: 3d3f9f413869b949e48070b5bc593aa22cc2b8f2
   subpackages:

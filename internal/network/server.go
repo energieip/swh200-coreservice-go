@@ -71,7 +71,7 @@ func (net ServerNetwork) RemoteServerConnection(conf config.Configuration, clien
 
 func (net ServerNetwork) onSetup(client genericNetwork.Client, msg genericNetwork.Message) {
 	payload := msg.Payload()
-	rlog.Info("Switch Setup: Received topic: " + msg.Topic() + " payload: " + string(payload[:]))
+	rlog.Info("Switch Setup: Received topic: " + msg.Topic() + " payload: " + string(payload))
 	var switchConf core.SwitchConfig
 	err := json.Unmarshal(payload, &switchConf)
 	if err != nil {
@@ -86,7 +86,7 @@ func (net ServerNetwork) onSetup(client genericNetwork.Client, msg genericNetwor
 
 func (net ServerNetwork) onRemoveSetting(client genericNetwork.Client, msg genericNetwork.Message) {
 	payload := msg.Payload()
-	rlog.Info("Force switch system update onRemoveSetting: Received topic: " + msg.Topic() + " payload: " + string(payload[:]))
+	rlog.Info("Force switch system update onRemoveSetting: Received topic: " + msg.Topic() + " payload: " + string(payload))
 	var switchConf core.SwitchConfig
 	err := json.Unmarshal(payload, &switchConf)
 	if err != nil {
@@ -101,7 +101,7 @@ func (net ServerNetwork) onRemoveSetting(client genericNetwork.Client, msg gener
 
 func (net ServerNetwork) onUpdateSetting(client genericNetwork.Client, msg genericNetwork.Message) {
 	payload := msg.Payload()
-	rlog.Info("Force switch system update onSwitchUpdate: Received topic: " + msg.Topic() + " payload: " + string(payload[:]))
+	rlog.Info("Force switch system update onSwitchUpdate: Received topic: " + msg.Topic() + " payload: " + string(payload))
 	var switchConf core.SwitchConfig
 	err := json.Unmarshal(payload, &switchConf)
 	if err != nil {
