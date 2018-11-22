@@ -5,7 +5,7 @@ import (
 	"time"
 
 	genericNetwork "github.com/energieip/common-network-go/pkg/network"
-	"github.com/energieip/swh200-coreservice-go/internal/core"
+	"github.com/energieip/common-switch-go/pkg/deviceswitch"
 	"github.com/energieip/swh200-coreservice-go/pkg/config"
 	"github.com/romana/rlog"
 )
@@ -19,7 +19,7 @@ const (
 //ServerNetwork network object
 type ServerNetwork struct {
 	Iface  genericNetwork.NetworkInterface
-	Events chan map[string]core.SwitchConfig
+	Events chan map[string]deviceswitch.SwitchConfig
 }
 
 //CreateServerNetwork create network server object
@@ -30,7 +30,7 @@ func CreateServerNetwork() (*ServerNetwork, error) {
 	}
 	serverNet := ServerNetwork{
 		Iface:  serverBroker,
-		Events: make(chan map[string]core.SwitchConfig),
+		Events: make(chan map[string]deviceswitch.SwitchConfig),
 	}
 	return &serverNet, nil
 
@@ -72,14 +72,14 @@ func (net ServerNetwork) RemoteServerConnection(conf config.Configuration, clien
 func (net ServerNetwork) onSetup(client genericNetwork.Client, msg genericNetwork.Message) {
 	payload := msg.Payload()
 	rlog.Info("Switch Setup: Received topic: " + msg.Topic() + " payload: " + string(payload))
-	var switchConf core.SwitchConfig
+	var switchConf deviceswitch.SwitchConfig
 	err := json.Unmarshal(payload, &switchConf)
 	if err != nil {
 		rlog.Error("Cannot parse config ", err.Error())
 		return
 	}
 
-	event := make(map[string]core.SwitchConfig)
+	event := make(map[string]deviceswitch.SwitchConfig)
 	event[EventServerSetup] = switchConf
 	net.Events <- event
 }
@@ -87,14 +87,14 @@ func (net ServerNetwork) onSetup(client genericNetwork.Client, msg genericNetwor
 func (net ServerNetwork) onRemoveSetting(client genericNetwork.Client, msg genericNetwork.Message) {
 	payload := msg.Payload()
 	rlog.Info("Force switch system update onRemoveSetting: Received topic: " + msg.Topic() + " payload: " + string(payload))
-	var switchConf core.SwitchConfig
+	var switchConf deviceswitch.SwitchConfig
 	err := json.Unmarshal(payload, &switchConf)
 	if err != nil {
 		rlog.Error("Cannot parse config ", err.Error())
 		return
 	}
 
-	event := make(map[string]core.SwitchConfig)
+	event := make(map[string]deviceswitch.SwitchConfig)
 	event[EventServerRemove] = switchConf
 	net.Events <- event
 }
@@ -102,14 +102,14 @@ func (net ServerNetwork) onRemoveSetting(client genericNetwork.Client, msg gener
 func (net ServerNetwork) onUpdateSetting(client genericNetwork.Client, msg genericNetwork.Message) {
 	payload := msg.Payload()
 	rlog.Info("Force switch system update onSwitchUpdate: Received topic: " + msg.Topic() + " payload: " + string(payload))
-	var switchConf core.SwitchConfig
+	var switchConf deviceswitch.SwitchConfig
 	err := json.Unmarshal(payload, &switchConf)
 	if err != nil {
 		rlog.Error("Cannot parse config ", err.Error())
 		return
 	}
 
-	event := make(map[string]core.SwitchConfig)
+	event := make(map[string]deviceswitch.SwitchConfig)
 	event[EventServerReload] = switchConf
 	net.Events <- event
 }

@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-11-22T12:00:39.891189584+01:00
+updated: 2018-11-22T18:20:48.2082267+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -27,6 +27,10 @@ imports:
   version: 6f4fbdeb21db0e5d929944becd6ff4ade1f306d9
   subpackages:
   - pkg/driversensor
+- name: github.com/energieip/common-switch-go
+  version: b21023fbd95768e545d90298fecbe707441528df
+  subpackages:
+  - pkg/deviceswitch
 - name: github.com/energieip/swh200-service-go
   version: 8ab43084db2044fefffa831acf1ad6769582bd3e
   subpackages:
@@ -61,7 +65,7 @@ imports:
   - proxy
   - websocket
 - name: golang.org/x/sys
-  version: 0cf1ed9e522b7dbb416f080a5c8003de9b702bf4
+  version: 62eef0e2fa9b2c385f7b2778e763486da6880d37
   subpackages:
   - unix
   - windows

@@ -9,6 +9,7 @@ import (
 	group "github.com/energieip/common-group-go/pkg/groupmodel"
 	"github.com/energieip/common-led-go/pkg/driverled"
 	"github.com/energieip/common-sensor-go/pkg/driversensor"
+	"github.com/energieip/common-switch-go/pkg/deviceswitch"
 	"github.com/energieip/swh200-coreservice-go/internal/core"
 	"github.com/energieip/swh200-coreservice-go/internal/database"
 	"github.com/energieip/swh200-coreservice-go/internal/network"
@@ -38,14 +39,14 @@ type CoreService struct {
 	ip                    string
 	isConfigured          bool
 	groups                map[int]group.GroupRuntime
-	services              map[string]core.Service
+	services              map[string]deviceswitch.Service
 	lastSystemUpgradeDate string
 }
 
 //Initialize service
 func (s *CoreService) Initialize(confFile string) error {
 	s.groups = make(map[int]group.GroupRuntime)
-	s.services = make(map[string]core.Service)
+	s.services = make(map[string]deviceswitch.Service)
 	s.lastSystemUpgradeDate = core.GetLastSystemUpgradeDate()
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -112,7 +113,7 @@ func (s *CoreService) Stop() {
 }
 
 func (s *CoreService) sendHello() {
-	switchDump := core.Switch{
+	switchDump := deviceswitch.Switch{
 		Mac:   s.mac,
 		IP:    s.ip,
 		Topic: "switch/" + s.mac,
@@ -135,17 +136,17 @@ func (s *CoreService) sendHello() {
 }
 
 func (s *CoreService) sendDump() {
-	status := core.SwitchStatus{}
+	status := deviceswitch.SwitchStatus{}
 	status.Mac = s.mac
 	status.Protocol = "MQTT"
 	status.IP = s.ip
 	status.IsConfigured = &s.isConfigured
 	status.LastSystemUpgradeDate = s.lastSystemUpgradeDate
 	status.Topic = "switch/" + s.mac
-	services := make(map[string]core.ServiceStatus)
+	services := make(map[string]deviceswitch.ServiceStatus)
 
 	for _, c := range s.services {
-		component := core.ServiceStatus{}
+		component := deviceswitch.ServiceStatus{}
 		component.Name = c.Name
 		component.PackageName = c.PackageName
 		component.Version = c.Version
@@ -173,7 +174,7 @@ func (s *CoreService) sendDump() {
 	rlog.Infof("Status %v sent to the server", s.mac)
 }
 
-func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
+func (s *CoreService) updateConfiguration(switchConfig deviceswitch.SwitchConfig) {
 	for _, led := range switchConfig.LedsSetup {
 		url := "/write/switch/led/setup/config"
 		ledDump, _ := led.ToJSON()
@@ -259,7 +260,7 @@ func (s *CoreService) updateConfiguration(switchConfig core.SwitchConfig) {
 	}
 }
 
-func (s *CoreService) removeConfiguration(switchConfig core.SwitchConfig) {
+func (s *CoreService) removeConfiguration(switchConfig deviceswitch.SwitchConfig) {
 	for _, group := range switchConfig.Groups {
 		dump, _ := group.ToJSON()
 		url := "/remove/switch/group/update/settings"
@@ -302,7 +303,7 @@ func (s *CoreService) cronDump() {
 	}
 }
 
-func (s *CoreService) packagesInstall(switchConfig core.SwitchConfig) {
+func (s *CoreService) packagesInstall(switchConfig deviceswitch.SwitchConfig) {
 	for name, service := range switchConfig.Services {
 		if currentState, ok := s.services[name]; ok {
 			if currentState.Version == service.Version {
@@ -313,7 +314,7 @@ func (s *CoreService) packagesInstall(switchConfig core.SwitchConfig) {
 
 		rlog.Info("Install " + name + " in version " + service.Version)
 		service.Install()
-		version := core.GetPackageVersion(service.PackageName)
+		version := deviceswitch.GetPackageVersion(service.PackageName)
 		if version != nil {
 			service.Version = *version
 		}
@@ -321,8 +322,8 @@ func (s *CoreService) packagesInstall(switchConfig core.SwitchConfig) {
 	}
 }
 
-func (s *CoreService) packagesRemove(switchConfig core.SwitchConfig) {
-	core.RemoveServices(switchConfig.Services)
+func (s *CoreService) packagesRemove(switchConfig deviceswitch.SwitchConfig) {
+	deviceswitch.RemoveServices(switchConfig.Services)
 	for _, service := range switchConfig.Services {
 		if _, ok := s.services[service.Name]; ok {
 			delete(s.services, service.Name)
@@ -330,7 +331,7 @@ func (s *CoreService) packagesRemove(switchConfig core.SwitchConfig) {
 	}
 }
 
-func (s *CoreService) systemUpdate(switchConfig core.SwitchConfig) {
+func (s *CoreService) systemUpdate(switchConfig deviceswitch.SwitchConfig) {
 	rlog.Info("Get " + s.lastSystemUpgradeDate + " and expect " + switchConfig.LastSystemUpgradeDate)
 	if switchConfig.LastSystemUpgradeDate == s.lastSystemUpgradeDate {
 		//system is already up to date
@@ -341,7 +342,7 @@ func (s *CoreService) systemUpdate(switchConfig core.SwitchConfig) {
 }
 
 func (s *CoreService) startServices() {
-	core.StartServices(s.services)
+	deviceswitch.StartServices(s.services)
 }
 
 //Run service mainloop
