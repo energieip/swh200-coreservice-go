@@ -1,0 +1,43 @@
+hash: 93304b50e62d10ab7839d1d5952ba5e5dbaaf01565da959580c6503199ec0106
+updated: 2018-11-20T10:51:52.526992633+01:00
+imports:
+- name: github.com/cenkalti/backoff
+  version: 62661b46c4093e2c1f38d943e663db1a29873e80
+- name: github.com/golang/protobuf
+  version: 882cf97a83ad205fd22af574246a3bc647d7a7d2
+  subpackages:
+  - proto
+- name: github.com/hailocab/go-hostpool
+  version: e80d13ce29ede4452c43dea11e79b9bc8a15b478
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: 5c8c8bd35d3832f5d134ae1e1e375b69a4d25242
+- name: github.com/opentracing/opentracing-go
+  version: be550b025b433cdfa2f11efb962afa2ea3c4d967
+  subpackages:
+  - ext
+  - log
+- name: github.com/sirupsen/logrus
+  version: 91da99df23e3bad7f384338a5a8f636d04093d9a
+- name: golang.org/x/crypto
+  version: 3d3f9f413869b949e48070b5bc593aa22cc2b8f2
+  subpackages:
+  - pbkdf2
+  - ssh/terminal
+- name: golang.org/x/net
+  version: adae6a3d119ae4890b46832a2e88a95adc62b8e7
+  subpackages:
+  - context
+- name: golang.org/x/sys
+  version: ec83556a53fe16b65c452a104ea9d1e86a671852
+  subpackages:
+  - unix
+  - windows
+- name: gopkg.in/fatih/pool.v2
+  version: 010e0b745d12eaf8426c95f9c3924d81dd0b668f
+- name: gopkg.in/rethinkdb/rethinkdb-go.v5
+  version: 442075482543497ce5f159d3dea451dc43bd1c0a
+  subpackages:
+  - encoding
+  - ql2
+  - types
+testImports: []

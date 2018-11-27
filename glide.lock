@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-11-26T18:42:04.515454092+01:00
+updated: 2018-11-27T16:09:49.592726705+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -8,27 +8,27 @@ imports:
   subpackages:
   - packets
 - name: github.com/energieip/common-database-go
-  version: 077344c8306ad3e191555a01ec004d6be0e758cb
+  version: a64a57a3afc5af682f00e9884f6f2fa53a7a13b3
   subpackages:
   - pkg/database
 - name: github.com/energieip/common-group-go
-  version: b2f2c19dde587e154ac0fe24657fdbcd94498a28
+  version: 8aa44fe275d45e6b69ca2246b50def5638b7713f
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go
-  version: 9c2087f86cf9faff94f3b13b44b9e08ed0352553
+  version: ffac42ae7c18fa1e994a2ed5b6ab2076ab1b5da3
   subpackages:
   - pkg/driverled
 - name: github.com/energieip/common-network-go
-  version: 5ec5ff7972a8901fe3f83cee30a8552580000378
+  version: bace4a82bf2b06b3eff0c115f9bfd0dcc480ae9c
   subpackages:
   - pkg/network
 - name: github.com/energieip/common-sensor-go
-  version: 9b3277fdd3e6d6e787065895f97da935d6573946
+  version: 26496e973e67ef7abc08a77ecc4cf132583aae96
   subpackages:
   - pkg/driversensor
 - name: github.com/energieip/common-switch-go
-  version: 2c5d858bf222690de3f14e66e36a8b852c36c432
+  version: b74b90b4fceb9d4f7b31b6edba700fda1c9137d2
   subpackages:
   - pkg/deviceswitch
 - name: github.com/energieip/swh200-service-go
@@ -53,7 +53,7 @@ imports:
 - name: github.com/sirupsen/logrus
   version: 29d7eb25e8ffa54207ff5a9a5c3d63e95be2cc39
 - name: golang.org/x/crypto
-  version: e657309f52e71501f9934566ac06dc5c2f7f11a1
+  version: eb0de9b17e854e9b1ccd9963efafc79862359959
   subpackages:
   - pbkdf2
   - ssh/terminal

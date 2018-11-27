@@ -1,0 +1,12 @@
+hash: b5b2049ed2d54ff65fa3c075e6d212790e4b0c686ed06f22daeb4d1ffcfe77b0
+updated: 2018-11-20T15:16:32.180282574+01:00
+imports:
+- name: github.com/energieip/common-led-go
+  version: 5582ce35942c8528a3af0d2b6e0a95e8ede5f356
+  subpackages:
+  - pkg/driverled
+- name: github.com/energieip/common-sensor-go
+  version: 193ea0173c15f5f8226d12e3f9e06f4529f80d50
+  subpackages:
+  - pkg/driversensor
+testImports: []
