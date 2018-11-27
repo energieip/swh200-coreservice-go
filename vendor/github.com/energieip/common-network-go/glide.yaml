@@ -1,9 +1,0 @@
-package: github.com/energieip/common-network-go
-homepage: https://github.com/energieip/common-network-go.git
-license: Apache v2.0
-owners:
-- name: Amandine Drebes
-  email: amandine@energie-ip.com
-  homepage: https://energie-ip.com
-import: [
-]
