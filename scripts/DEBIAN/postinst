@@ -1,5 +1,5 @@
 #!/bin/bash
 
 systemctl daemon-reload
-systemctl enable core.service
-systemctl start core.service
+systemctl enable energieip-core.service
+systemctl restart energieip-core.service

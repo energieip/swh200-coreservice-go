@@ -1,4 +1,4 @@
-COMPONENT=coreservice
+COMPONENT=energieip-core
 
 BINARIES=bin/$(COMPONENT)-armhf bin/$(COMPONENT)-amd64
 
@@ -32,18 +32,19 @@ deb-armhf: bin/$(COMPONENT)-armhf
 	make deb VERSION=$(VERSION) BUILD_PATH=$(BUILD_PATH) ARCH=$(ARCH) BUILD_NAME=$(BUILD_NAME)
 
 deb:
-	mkdir -p $(BUILD_PATH)/usr/bin $(BUILD_PATH)/etc/$(COMPONENT) $(BUILD_PATH)/etc/systemd/system
+	mkdir -p $(BUILD_PATH)/usr/local/bin $(BUILD_PATH)/etc/$(COMPONENT) $(BUILD_PATH)/etc/systemd/system
 	cp -r ./scripts/DEBIAN $(BUILD_PATH)/
 	cp ./scripts/config.json $(BUILD_PATH)/etc/$(COMPONENT)/
 	cp ./scripts/*.service $(BUILD_PATH)/etc/systemd/system/
 	sed -i "s/amd64/$(ARCH)/g" $(BUILD_PATH)/DEBIAN/control
 	sed -i "s/VERSION/$(VERSION)/g" $(BUILD_PATH)/DEBIAN/control
+	sed -i "s/COMPONENT/$(COMPONENT)/g" $(BUILD_PATH)/DEBIAN/control
 	cp ./scripts/Makefile $(BUILD_PATH)/../
-	cp bin/$(COMPONENT)-$(ARCH) $(BUILD_PATH)/usr/bin/$(COMPONENT)
+	cp bin/$(COMPONENT)-$(ARCH) $(BUILD_PATH)/usr/local/bin/$(COMPONENT)
 	make -C build DEB_PACKAGE=$(BUILD_NAME) deb
 
 clean:
-	rm -rf $(BINARIES) build
+	rm -rf bin build
 
 run: bin/$(COMPONENT)-amd64
 	./bin/$(COMPONENT)-amd64 -c ./scripts/config.json
