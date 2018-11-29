@@ -10,11 +10,11 @@ import (
 	"github.com/energieip/common-led-go/pkg/driverled"
 	"github.com/energieip/common-sensor-go/pkg/driversensor"
 	"github.com/energieip/common-switch-go/pkg/deviceswitch"
+	"github.com/energieip/common-tools-go/pkg/tools"
 	"github.com/energieip/swh200-coreservice-go/internal/core"
 	"github.com/energieip/swh200-coreservice-go/internal/database"
 	"github.com/energieip/swh200-coreservice-go/internal/network"
 	"github.com/energieip/swh200-coreservice-go/pkg/config"
-	"github.com/energieip/swh200-coreservice-go/pkg/tools"
 	"github.com/romana/rlog"
 )
 
