@@ -5,8 +5,8 @@ import (
 	"time"
 
 	genericNetwork "github.com/energieip/common-network-go/pkg/network"
+	pkg "github.com/energieip/common-service-go/pkg/service"
 	"github.com/energieip/common-switch-go/pkg/deviceswitch"
-	"github.com/energieip/swh200-coreservice-go/pkg/config"
 	"github.com/romana/rlog"
 )
 
@@ -37,30 +37,30 @@ func CreateServerNetwork() (*ServerNetwork, error) {
 }
 
 //RemoteServerConnection connect service to server broker
-func (net ServerNetwork) RemoteServerConnection(conf config.Configuration, clientID, switchMac string) error {
+func (net ServerNetwork) RemoteServerConnection(conf pkg.ServiceConfig, clientID, switchMac string) error {
 	cbkServer := make(map[string]func(genericNetwork.Client, genericNetwork.Message))
 	cbkServer["/write/switch/"+switchMac+"/setup/config"] = net.onSetup
 	cbkServer["/write/switch/"+switchMac+"/update/settings"] = net.onUpdateSetting
 	cbkServer["/remove/switch/"+switchMac+"/update/settings"] = net.onRemoveSetting
 
 	confServer := genericNetwork.NetworkConfig{
-		IP:         conf.ServerIP,
-		Port:       conf.ServerPort,
+		IP:         conf.NetworkBroker.IP,
+		Port:       conf.NetworkBroker.Port,
 		ClientName: clientID,
 		Callbacks:  cbkServer,
-		LogLevel:   *conf.LogLevel,
+		LogLevel:   conf.LogLevel,
 	}
 
 	for {
-		rlog.Info("Try to connect to " + conf.ServerIP)
+		rlog.Info("Try to connect to " + conf.NetworkBroker.IP)
 		err := net.Iface.Initialize(confServer)
 		if err == nil {
-			rlog.Info(clientID + " connected to server broker " + conf.ServerIP)
+			rlog.Info(clientID + " connected to server broker " + conf.NetworkBroker.IP)
 			return err
 		}
 		timer := time.NewTicker(time.Second)
-		rlog.Error("Cannot connect to broker " + conf.ServerIP + " error: " + err.Error())
-		rlog.Error("Try to reconnect " + conf.ServerIP + " in 1s")
+		rlog.Error("Cannot connect to broker " + conf.NetworkBroker.IP + " error: " + err.Error())
+		rlog.Error("Try to reconnect " + conf.NetworkBroker.IP + " in 1s")
 
 		select {
 		case <-timer.C:

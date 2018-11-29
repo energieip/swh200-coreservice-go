@@ -15,7 +15,6 @@ import (
 	"github.com/energieip/swh200-coreservice-go/internal/core"
 	"github.com/energieip/swh200-coreservice-go/internal/database"
 	"github.com/energieip/swh200-coreservice-go/internal/network"
-	"github.com/energieip/swh200-coreservice-go/pkg/config"
 	"github.com/romana/rlog"
 )
 
@@ -27,6 +26,8 @@ const (
 
 	UrlStatus = "status/dump"
 	UrlHello  = "setup/hello"
+
+	TimerDump = 10
 )
 
 //CoreService content
@@ -59,20 +60,20 @@ func (s *CoreService) Initialize(confFile string) error {
 	s.mac = strings.ToUpper(strings.Replace(s.mac, ":", "", -1))
 	s.events = make(chan string)
 
-	conf, err := config.ReadConfig(confFile)
+	conf, err := pkg.ReadServiceConfig(confFile)
 	if err != nil {
 		rlog.Error("Cannot parse configuration file " + err.Error())
 		return err
 	}
-	os.Setenv("RLOG_LOG_LEVEL", *conf.LogLevel)
+	os.Setenv("RLOG_LOG_LEVEL", conf.LogLevel)
 	os.Setenv("RLOG_LOG_NOTIME", "yes")
 	rlog.UpdateEnv()
 	rlog.Info("Starting SwitchCore service")
 
 	s.isConfigured = false
-	s.timerDump = conf.TimerDump
+	s.timerDump = TimerDump
 
-	db, err := database.ConnectDatabase(conf.DatabaseIP, conf.DatabasePort)
+	db, err := database.ConnectDatabase(conf.DB.ClientIP, conf.DB.ClientPort)
 	if err != nil {
 		rlog.Error("Cannot connect to database " + err.Error())
 		return err
@@ -81,21 +82,21 @@ func (s *CoreService) Initialize(confFile string) error {
 
 	serverNet, err := network.CreateServerNetwork()
 	if err != nil {
-		rlog.Error("Cannot connect to broker " + conf.ServerIP + " error: " + err.Error())
+		rlog.Error("Cannot connect to broker " + conf.LocalBroker.IP + " error: " + err.Error())
 		return err
 	}
 	s.server = *serverNet
 
 	driversNet, err := network.CreateLocalNetwork()
 	if err != nil {
-		rlog.Error("Cannot connect to broker " + conf.ServerIP + " error: " + err.Error())
+		rlog.Error("Cannot connect to broker " + conf.NetworkBroker.IP + " error: " + err.Error())
 		return err
 	}
 	s.local = *driversNet
 
 	err = s.local.LocalConnection(*conf, clientID, s.mac)
 	if err != nil {
-		rlog.Error("Cannot connect to drivers broker " + conf.DriversIP + " error: " + err.Error())
+		rlog.Error("Cannot connect to drivers broker " + conf.LocalBroker.IP + " error: " + err.Error())
 		return err
 	}
 

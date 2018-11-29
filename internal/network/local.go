@@ -2,7 +2,7 @@ package network
 
 import (
 	genericNetwork "github.com/energieip/common-network-go/pkg/network"
-	"github.com/energieip/swh200-coreservice-go/pkg/config"
+	pkg "github.com/energieip/common-service-go/pkg/service"
 )
 
 //LocalNetwork network object
@@ -24,14 +24,14 @@ func CreateLocalNetwork() (*LocalNetwork, error) {
 }
 
 //LocalConnection connect service to drivers and services broker
-func (net LocalNetwork) LocalConnection(conf config.Configuration, clientID, switchMac string) error {
+func (net LocalNetwork) LocalConnection(conf pkg.ServiceConfig, clientID, switchMac string) error {
 	cbkLocal := make(map[string]func(genericNetwork.Client, genericNetwork.Message))
 	confLocal := genericNetwork.NetworkConfig{
-		IP:         conf.DriversIP,
-		Port:       conf.DriversPort,
+		IP:         conf.LocalBroker.IP,
+		Port:       conf.LocalBroker.Port,
 		ClientName: clientID,
 		Callbacks:  cbkLocal,
-		LogLevel:   *conf.LogLevel,
+		LogLevel:   conf.LogLevel,
 	}
 	return net.Iface.Initialize(confLocal)
 }
