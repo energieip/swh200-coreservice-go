@@ -9,6 +9,7 @@ import (
 	group "github.com/energieip/common-group-go/pkg/groupmodel"
 	"github.com/energieip/common-led-go/pkg/driverled"
 	"github.com/energieip/common-sensor-go/pkg/driversensor"
+	pkg "github.com/energieip/common-service-go/pkg/service"
 	"github.com/energieip/common-switch-go/pkg/deviceswitch"
 	"github.com/energieip/common-tools-go/pkg/tools"
 	"github.com/energieip/swh200-coreservice-go/internal/core"
@@ -39,14 +40,14 @@ type CoreService struct {
 	ip                    string
 	isConfigured          bool
 	groups                map[int]group.GroupRuntime
-	services              map[string]deviceswitch.Service
+	services              map[string]pkg.Service
 	lastSystemUpgradeDate string
 }
 
 //Initialize service
 func (s *CoreService) Initialize(confFile string) error {
 	s.groups = make(map[int]group.GroupRuntime)
-	s.services = make(map[string]deviceswitch.Service)
+	s.services = make(map[string]pkg.Service)
 	s.lastSystemUpgradeDate = core.GetLastSystemUpgradeDate()
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -143,10 +144,10 @@ func (s *CoreService) sendDump() {
 	status.IsConfigured = &s.isConfigured
 	status.LastSystemUpgradeDate = s.lastSystemUpgradeDate
 	status.Topic = "switch/" + s.mac
-	services := make(map[string]deviceswitch.ServiceStatus)
+	services := make(map[string]pkg.ServiceStatus)
 
 	for _, c := range s.services {
-		component := deviceswitch.ServiceStatus{}
+		component := pkg.ServiceStatus{}
 		component.Name = c.Name
 		component.PackageName = c.PackageName
 		component.Version = c.Version
@@ -314,7 +315,7 @@ func (s *CoreService) packagesInstall(switchConfig deviceswitch.SwitchConfig) {
 
 		rlog.Info("Install " + name + " in version " + service.Version)
 		service.Install()
-		version := deviceswitch.GetPackageVersion(service.PackageName)
+		version := pkg.GetPackageVersion(service.PackageName)
 		if version != nil {
 			service.Version = *version
 		}
@@ -323,7 +324,7 @@ func (s *CoreService) packagesInstall(switchConfig deviceswitch.SwitchConfig) {
 }
 
 func (s *CoreService) packagesRemove(switchConfig deviceswitch.SwitchConfig) {
-	deviceswitch.RemoveServices(switchConfig.Services)
+	pkg.RemoveServices(switchConfig.Services)
 	for _, service := range switchConfig.Services {
 		if _, ok := s.services[service.Name]; ok {
 			delete(s.services, service.Name)
@@ -342,7 +343,7 @@ func (s *CoreService) systemUpdate(switchConfig deviceswitch.SwitchConfig) {
 }
 
 func (s *CoreService) startServices() {
-	deviceswitch.StartServices(s.services)
+	pkg.StartServices(s.services)
 }
 
 //Run service mainloop
