@@ -292,7 +292,17 @@ func (s *CoreService) removeConfiguration(switchConfig deviceswitch.SwitchConfig
 }
 
 func (s *CoreService) updateServicesConfiguration() {
-	rlog.Debug("Update services configuration")
+	for _, srv := range s.services {
+		if srv.ConfigPath == "" {
+			continue
+		}
+		rlog.Info("Update " + srv.Name + " configuration, path :" + srv.ConfigPath)
+		err := pkg.WriteServiceConfig(srv.ConfigPath, srv.Config)
+		if err != nil {
+			rlog.Warn("Cannot write configuration for " + srv.ConfigPath + " err: " + err.Error())
+			continue
+		}
+	}
 }
 
 func (s *CoreService) cronDump() {
