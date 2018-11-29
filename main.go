@@ -7,13 +7,13 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/energieip/common-service-go/pkg/service"
 	coreService "github.com/energieip/swh200-coreservice-go/internal/service"
-	"github.com/energieip/swh200-service-go/pkg/service"
 )
 
 func main() {
 	var confFile string
-	var service service.Service
+	var service service.IService
 
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flag.StringVar(&confFile, "config", "", "Specify an alternate configuration file.")

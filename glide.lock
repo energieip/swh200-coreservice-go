@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-11-27T16:53:12.782014343+01:00
+updated: 2018-11-29T08:56:02.945602314+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - pkg/database
 - name: github.com/energieip/common-group-go
-  version: f6d69601b158ab8178d90e4aa3c74452a094e30e
+  version: 30e7048ad4cdf92cee7592b924200aba3aa1faa1
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go
@@ -27,16 +27,16 @@ imports:
   version: 56bc81b92fc6ca9f63f8714bc54dffcfb3d71f0e
   subpackages:
   - pkg/driversensor
-- name: github.com/energieip/common-switch-go
-  version: 05351eb0f95958fb8bc12ebcf5dc693c1beff6d0
-  subpackages:
-  - pkg/deviceswitch
-- name: github.com/energieip/swh200-service-go
-  version: 8ab43084db2044fefffa831acf1ad6769582bd3e
+- name: github.com/energieip/common-service-go
+  version: d56510854f16835548f1da189ad6cd911f4a2316
   subpackages:
   - pkg/service
+- name: github.com/energieip/common-switch-go
+  version: 35b83fc97786ef417f7c3495bb12c709b227b881
+  subpackages:
+  - pkg/deviceswitch
 - name: github.com/golang/protobuf
-  version: 882cf97a83ad205fd22af574246a3bc647d7a7d2
+  version: 1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f
   subpackages:
   - proto
 - name: github.com/hailocab/go-hostpool
@@ -58,14 +58,14 @@ imports:
   - pbkdf2
   - ssh/terminal
 - name: golang.org/x/net
-  version: adae6a3d119ae4890b46832a2e88a95adc62b8e7
+  version: fae4c4e3ad76c295c3d6d259f898136b4bf833a8
   subpackages:
   - context
   - internal/socks
   - proxy
   - websocket
 - name: golang.org/x/sys
-  version: 62eef0e2fa9b2c385f7b2778e763486da6880d37
+  version: 4ed8d59d0b35e1e29334a206d1b3f38b1e5dfb31
   subpackages:
   - unix
   - windows
