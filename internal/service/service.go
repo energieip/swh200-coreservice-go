@@ -43,12 +43,14 @@ type CoreService struct {
 	groups                map[int]group.GroupRuntime
 	services              map[string]pkg.Service
 	lastSystemUpgradeDate string
+	isBusy                bool //an activity is performed
 }
 
 //Initialize service
 func (s *CoreService) Initialize(confFile string) error {
 	s.groups = make(map[int]group.GroupRuntime)
 	s.services = make(map[string]pkg.Service)
+	s.isBusy = false
 	s.lastSystemUpgradeDate = core.GetLastSystemUpgradeDate()
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -388,16 +390,26 @@ func (s *CoreService) Run() error {
 					fallthrough
 
 				case network.EventServerSetup:
+					if s.isBusy {
+						continue
+					}
+					s.isBusy = true
 					s.systemUpdate(event)
 					s.packagesInstall(event)
 					s.updateConfiguration(event)
 					s.updateServicesConfiguration()
 					s.startServices()
 					s.isConfigured = true
+					s.isBusy = false
 
 				case network.EventServerRemove:
+					if s.isBusy {
+						continue
+					}
+					s.isBusy = true
 					s.packagesRemove(event)
 					s.removeConfiguration(event)
+					s.isBusy = false
 				}
 			}
 		}
