@@ -1,42 +1,42 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-11-29T13:03:47.585479938+01:00
+updated: 2018-12-04T11:01:41.400437024+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
 - name: github.com/eclipse/paho.mqtt.golang
-  version: 103f6a1ef3ffa45671307ccb1c88ba2f4834993d
+  version: 379fd9f99ba5b1f02c9fffb5e5952416ef9301dc
   subpackages:
   - packets
 - name: github.com/energieip/common-database-go
-  version: a64a57a3afc5af682f00e9884f6f2fa53a7a13b3
+  version: 1cb7810c1da3f744c5ac7fc19841feb42e92f00f
   subpackages:
   - pkg/database
 - name: github.com/energieip/common-group-go
-  version: 30e7048ad4cdf92cee7592b924200aba3aa1faa1
+  version: a4e134c77e135d42fc59ea7605a668c02e376189
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go
-  version: 20e2729cf61ead34bbd2e604f232ce290cb11352
+  version: f70f3e6023d37e28ff85e09c2f87713694e61234
   subpackages:
   - pkg/driverled
 - name: github.com/energieip/common-network-go
-  version: 8aff99fdd768a5419044500cbcee9660b6944954
+  version: 01ec1e24bba2894274ea78d510b5fe7f2649352a
   subpackages:
   - pkg/network
 - name: github.com/energieip/common-sensor-go
-  version: 56bc81b92fc6ca9f63f8714bc54dffcfb3d71f0e
+  version: 22f5097a11881daad93c1880dda1db59ba345db7
   subpackages:
   - pkg/driversensor
 - name: github.com/energieip/common-service-go
-  version: b40265356dfb63f6a16c971abca9d6b415f14a14
+  version: b961505ab34088b37ffe57641fbb5451dcb03e83
   subpackages:
   - pkg/service
 - name: github.com/energieip/common-switch-go
-  version: e71133e2d62bddf07f7d27d74051c23177fa10d5
+  version: 867442a8f7005f5e312c062252b71bde61f50ffa
   subpackages:
   - pkg/deviceswitch
 - name: github.com/energieip/common-tools-go
-  version: e0bf4370782ed513145f229c7e4ea221dd7d4041
+  version: e984ad0511951c4e76e0145ed686128121575be8
   subpackages:
   - pkg/tools
 - name: github.com/golang/protobuf
@@ -48,7 +48,7 @@ imports:
 - name: github.com/konsorten/go-windows-terminal-sequences
   version: 5c8c8bd35d3832f5d134ae1e1e375b69a4d25242
 - name: github.com/opentracing/opentracing-go
-  version: be550b025b433cdfa2f11efb962afa2ea3c4d967
+  version: 8b5a441dc60e8d9bb9bf9d22060b6d94fa599983
   subpackages:
   - ext
   - log
@@ -57,12 +57,12 @@ imports:
 - name: github.com/sirupsen/logrus
   version: 29d7eb25e8ffa54207ff5a9a5c3d63e95be2cc39
 - name: golang.org/x/crypto
-  version: eb0de9b17e854e9b1ccd9963efafc79862359959
+  version: 505ab145d0a99da450461ae2c1a9f6cd10d1f447
   subpackages:
   - pbkdf2
   - ssh/terminal
 - name: golang.org/x/net
-  version: fae4c4e3ad76c295c3d6d259f898136b4bf833a8
+  version: 351d144fa1fc0bd934e2408202be0c29f25e35a0
   subpackages:
   - context
   - internal/socks
