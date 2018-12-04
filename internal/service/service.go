@@ -387,29 +387,24 @@ func (s *CoreService) Run() error {
 						continue
 					}
 					//In this case reload == setup
-					fallthrough
+					s.updateConfiguration(event)
+					s.isConfigured = true
 
 				case network.EventServerSetup:
-					if s.isBusy {
-						continue
-					}
-					s.isBusy = true
+					s.isConfigured = true
 					s.systemUpdate(event)
 					s.packagesInstall(event)
-					s.updateConfiguration(event)
 					s.updateServicesConfiguration()
 					s.startServices()
-					s.isConfigured = true
-					s.isBusy = false
+					// s.updateConfiguration(event)
 
 				case network.EventServerRemove:
-					if s.isBusy {
+					if !s.isConfigured {
+						//a reset is performed
 						continue
 					}
-					s.isBusy = true
 					s.packagesRemove(event)
 					s.removeConfiguration(event)
-					s.isBusy = false
 				}
 			}
 		}
