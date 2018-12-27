@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-12-24T15:56:16.695793678+01:00
+updated: 2018-12-27T10:28:19.801537948+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -55,12 +55,13 @@ imports:
 - name: github.com/romana/rlog
   version: f018bc92e7d71f27c04e04cbf008860416c21d01
 - name: github.com/sirupsen/logrus
-  version: 2067ea4241cec716fbd0ac90f42f339f963bff92
+  version: 6180652bb05834ae178c93911ddae14b689408b7
 - name: golang.org/x/crypto
   version: 505ab145d0a99da450461ae2c1a9f6cd10d1f447
   subpackages:
-  - pbkdf2
   - ssh/terminal
+- name: golang.org/x/crypto/pbkdf2
+  version: 505ab145d0a99da450461ae2c1a9f6cd10d1f447
 - name: golang.org/x/net
   version: 927f97764cc334a6575f4b7a1584a147864d5723
   subpackages:
