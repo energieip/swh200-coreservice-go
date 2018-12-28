@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-12-28T08:02:08.324539176+01:00
+updated: 2018-12-28T08:49:00.400799793+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go
-  version: db3539d69910350ce1d2b7d10e48dbf43125edd4
+  version: b04b444ef448b287d92ec40c0600ad86e0043393
   subpackages:
   - pkg/driverled
 - name: github.com/energieip/common-network-go
@@ -24,7 +24,7 @@ imports:
   subpackages:
   - pkg/network
 - name: github.com/energieip/common-sensor-go
-  version: 08615d49879759b91f0cb2f4c1ff813f0ff74b3a
+  version: db51ee3e5a6ab2fa60dd4e2c16eff74db4c1e0d0
   subpackages:
   - pkg/driversensor
 - name: github.com/energieip/common-service-go
