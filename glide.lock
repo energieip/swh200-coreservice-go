@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-12-27T14:03:04.151058463+01:00
+updated: 2018-12-28T08:02:08.324539176+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -24,7 +24,7 @@ imports:
   subpackages:
   - pkg/network
 - name: github.com/energieip/common-sensor-go
-  version: ace02847f4ef6d6c880a8664381ead925f49179b
+  version: 08615d49879759b91f0cb2f4c1ff813f0ff74b3a
   subpackages:
   - pkg/driversensor
 - name: github.com/energieip/common-service-go
