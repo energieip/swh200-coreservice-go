@@ -59,19 +59,8 @@ func CreateGroup(db database.Database, mac string, gr groupmodel.GroupConfig) *g
 		leds = append(leds, *led)
 	}
 	group.Leds = leds
-	if !isLocalGroup(mac, group) {
-		return nil
-	}
+	group.SetpointLeds = gr.SetpointLeds
 	return &group
-}
-
-func isLocalGroup(mac string, gr groupmodel.GroupRuntime) bool {
-	for _, led := range gr.Leds {
-		if led.SwitchMac == mac {
-			return true
-		}
-	}
-	return false
 }
 
 //UpdateGroup Update existing group. If the group is no longer local: remove it
@@ -124,8 +113,8 @@ func UpdateGroup(db database.Database, mac string, gr groupmodel.GroupRuntime, g
 	}
 	gr.Leds = leds
 
-	if !isLocalGroup(mac, gr) {
-		return nil
+	if gc.SetpointLeds != nil {
+		gr.SetpointLeds = gc.SetpointLeds
 	}
 	return &gr
 }
