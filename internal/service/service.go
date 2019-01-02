@@ -34,31 +34,21 @@ type CoreService struct {
 	server                network.ServerNetwork //Remote server
 	local                 network.LocalNetwork  //local broker for drivers and services
 	db                    database.Database
-	mac                   string //Switch mac address
+	Mac                   string `json:"mac"` //Switch mac address
 	events                chan string
-	timerDump             time.Duration //in seconds
-	ip                    string
-	isConfigured          bool
-	groups                map[int]bool
-	services              map[string]pkg.Service
-	lastSystemUpgradeDate string
-	isBusy                bool //an activity is performed
+	timerDump             time.Duration          //in seconds
+	IP                    string                 `json:"ip"`
+	IsConfigured          bool                   `json:"isConfigured"`
+	Groups                map[int]bool           `json:"groups"`
+	Services              map[string]pkg.Service `json:"services"`
+	LastSystemUpgradeDate string                 `json:"lastSystemUpgradeDate"`
+	persistentDataPath    string
 }
 
 //Initialize service
 func (s *CoreService) Initialize(confFile string) error {
-	s.groups = make(map[int]bool)
-	s.services = make(map[string]pkg.Service)
-	s.isBusy = false
-	s.lastSystemUpgradeDate = core.GetLastSystemUpgradeDate()
-	hostname, err := os.Hostname()
-	if err != nil {
-		rlog.Error("Cannot read hostname " + err.Error())
-		return err
-	}
+	hostname, _ := os.Hostname()
 	clientID := "Switch" + hostname
-	s.mac, s.ip = tools.GetNetworkInfo()
-	s.mac = strings.ToUpper(strings.Replace(s.mac, ":", "", -1))
 	s.events = make(chan string)
 
 	conf, err := pkg.ReadServiceConfig(confFile)
@@ -66,12 +56,25 @@ func (s *CoreService) Initialize(confFile string) error {
 		rlog.Error("Cannot parse configuration file " + err.Error())
 		return err
 	}
+	s.persistentDataPath = conf.PersistentDataPath
+
 	os.Setenv("RLOG_LOG_LEVEL", conf.LogLevel)
 	os.Setenv("RLOG_LOG_NOTIME", "yes")
 	rlog.UpdateEnv()
 	rlog.Info("Starting SwitchCore service")
 
-	s.isConfigured = false
+	err = s.loadPersistentData()
+	if err != nil {
+		s.Groups = make(map[int]bool)
+		s.Services = make(map[string]pkg.Service)
+		s.LastSystemUpgradeDate = core.GetLastSystemUpgradeDate()
+
+		s.Mac, s.IP = tools.GetNetworkInfo()
+		s.Mac = strings.ToUpper(strings.Replace(s.Mac, ":", "", -1))
+		s.IsConfigured = false
+		s.writePersistentData()
+	}
+
 	s.timerDump = TimerDump
 
 	db, err := database.ConnectDatabase(conf.DB.ClientIP, conf.DB.ClientPort)
@@ -95,13 +98,13 @@ func (s *CoreService) Initialize(confFile string) error {
 	}
 	s.local = *driversNet
 
-	err = s.local.LocalConnection(*conf, clientID, s.mac)
+	err = s.local.LocalConnection(*conf, clientID, s.Mac)
 	if err != nil {
 		rlog.Error("Cannot connect to drivers broker " + conf.LocalBroker.IP + " error: " + err.Error())
 		return err
 	}
 
-	go s.server.RemoteServerConnection(*conf, clientID, s.mac)
+	go s.server.RemoteServerConnection(*conf, clientID, s.Mac)
 	rlog.Info("SwitchCore service started")
 	return nil
 }
@@ -109,6 +112,7 @@ func (s *CoreService) Initialize(confFile string) error {
 //Stop service
 func (s *CoreService) Stop() {
 	rlog.Info("Stopping SwitchCore service")
+	s.writePersistentData()
 	s.server.Disconnect()
 	s.local.Disconnect()
 	s.db.Close()
@@ -117,38 +121,38 @@ func (s *CoreService) Stop() {
 
 func (s *CoreService) sendHello() {
 	switchDump := deviceswitch.Switch{
-		Mac:   s.mac,
-		IP:    s.ip,
-		Topic: "switch/" + s.mac,
-		LastSystemUpgradeDate: s.lastSystemUpgradeDate,
-		IsConfigured:          &s.isConfigured,
+		Mac:   s.Mac,
+		IP:    s.IP,
+		Topic: "switch/" + s.Mac,
+		LastSystemUpgradeDate: s.LastSystemUpgradeDate,
+		IsConfigured:          &s.IsConfigured,
 		Protocol:              "MQTT",
 	}
 	dump, err := switchDump.ToJSON()
 	if err != nil {
-		rlog.Errorf("Could not dump switch %v status %v", s.mac, err.Error())
+		rlog.Errorf("Could not dump switch %v status %v", s.Mac, err.Error())
 		return
 	}
 
 	err = s.server.SendCommand("/read/"+switchDump.Topic+"/"+UrlHello, dump)
 	if err != nil {
-		rlog.Errorf("Could not send hello to the server %v status %v", s.mac, err.Error())
+		rlog.Errorf("Could not send hello to the server %v status %v", s.Mac, err.Error())
 		return
 	}
-	rlog.Infof("Hello %v sent to the server", s.mac)
+	rlog.Infof("Hello %v sent to the server", s.Mac)
 }
 
 func (s *CoreService) sendDump() {
 	status := deviceswitch.SwitchStatus{}
-	status.Mac = s.mac
+	status.Mac = s.Mac
 	status.Protocol = "MQTT"
-	status.IP = s.ip
-	status.IsConfigured = &s.isConfigured
-	status.LastSystemUpgradeDate = s.lastSystemUpgradeDate
-	status.Topic = "switch/" + s.mac
+	status.IP = s.IP
+	status.IsConfigured = &s.IsConfigured
+	status.LastSystemUpgradeDate = s.LastSystemUpgradeDate
+	status.Topic = "switch/" + s.Mac
 	services := make(map[string]pkg.ServiceStatus)
 
-	for _, c := range s.services {
+	for _, c := range s.Services {
 		component := pkg.ServiceStatus{}
 		component.Name = c.Name
 		component.PackageName = c.PackageName
@@ -159,9 +163,9 @@ func (s *CoreService) sendDump() {
 	}
 
 	status.Services = services
-	status.Leds = database.GetSwitchLeds(s.db, s.mac)
-	status.Sensors = database.GetSwitchSensors(s.db, s.mac)
-	status.Groups = database.GetStatusGroup(s.db, s.groups)
+	status.Leds = database.GetSwitchLeds(s.db, s.Mac)
+	status.Sensors = database.GetSwitchSensors(s.db, s.Mac)
+	status.Groups = database.GetStatusGroup(s.db, s.Groups)
 
 	dump, err := status.ToJSON()
 	if err != nil {
@@ -171,10 +175,10 @@ func (s *CoreService) sendDump() {
 
 	err = s.server.SendCommand("/read/"+status.Topic+"/"+UrlStatus, dump)
 	if err != nil {
-		rlog.Errorf("Could not dump switch %v status %v", s.mac, err.Error())
+		rlog.Errorf("Could not dump switch %v status %v", s.Mac, err.Error())
 		return
 	}
-	rlog.Infof("Status %v sent to the server", s.mac)
+	rlog.Infof("Status %v sent to the server", s.Mac)
 }
 
 func (s *CoreService) updateConfiguration(switchConfig deviceswitch.SwitchConfig) {
@@ -201,9 +205,9 @@ func (s *CoreService) updateConfiguration(switchConfig deviceswitch.SwitchConfig
 	}
 
 	for grID := range switchConfig.Groups {
-		_, ok := s.groups[grID]
+		_, ok := s.Groups[grID]
 		if !ok {
-			s.groups[grID] = true
+			s.Groups[grID] = true
 		}
 	}
 	if len(switchConfig.Groups) > 0 {
@@ -214,13 +218,14 @@ func (s *CoreService) updateConfiguration(switchConfig deviceswitch.SwitchConfig
 			s.local.SendCommand(url, dump)
 		}
 	}
+	s.writePersistentData()
 }
 
 func (s *CoreService) removeConfiguration(switchConfig deviceswitch.SwitchConfig) {
 	for grID, group := range switchConfig.Groups {
-		_, ok := s.groups[grID]
+		_, ok := s.Groups[grID]
 		if ok {
-			delete(s.groups, grID)
+			delete(s.Groups, grID)
 		}
 		dump, _ := group.ToJSON()
 		url := "/remove/switch/group/update/settings"
@@ -247,10 +252,11 @@ func (s *CoreService) removeConfiguration(switchConfig deviceswitch.SwitchConfig
 		url := "/write/switch/sensor/update/settings"
 		s.local.SendCommand(url, dump)
 	}
+	s.writePersistentData()
 }
 
 func (s *CoreService) updateServicesConfiguration() {
-	for _, srv := range s.services {
+	for _, srv := range s.Services {
 		if srv.ConfigPath == "" {
 			continue
 		}
@@ -274,45 +280,55 @@ func (s *CoreService) cronDump() {
 }
 
 func (s *CoreService) packagesInstall(switchConfig deviceswitch.SwitchConfig) {
+	newService := false
 	for name, service := range switchConfig.Services {
-		if currentState, ok := s.services[name]; ok {
+		if currentState, ok := s.Services[name]; ok {
 			if currentState.Version == service.Version {
 				rlog.Info("Package " + name + " already in version " + service.Version + " skip it")
 				continue
 			}
 		}
-
+		newService = true
 		rlog.Info("Install " + name + " in version " + service.Version)
 		service.Install()
 		version := pkg.GetPackageVersion(service.PackageName)
 		if version != nil {
 			service.Version = *version
 		}
-		s.services[service.Name] = service
+		s.Services[service.Name] = service
+	}
+	if newService {
+		s.writePersistentData()
 	}
 }
 
 func (s *CoreService) packagesRemove(switchConfig deviceswitch.SwitchConfig) {
+	newService := false
 	pkg.RemoveServices(switchConfig.Services)
 	for _, service := range switchConfig.Services {
-		if _, ok := s.services[service.Name]; ok {
-			delete(s.services, service.Name)
+		if _, ok := s.Services[service.Name]; ok {
+			delete(s.Services, service.Name)
+			newService = true
 		}
+	}
+	if newService {
+		s.writePersistentData()
 	}
 }
 
 func (s *CoreService) systemUpdate(switchConfig deviceswitch.SwitchConfig) {
-	rlog.Info("Get " + s.lastSystemUpgradeDate + " and expect " + switchConfig.LastSystemUpgradeDate)
-	if switchConfig.LastSystemUpgradeDate == s.lastSystemUpgradeDate {
+	rlog.Info("Get " + s.LastSystemUpgradeDate + " and expect " + switchConfig.LastSystemUpgradeDate)
+	if switchConfig.LastSystemUpgradeDate == s.LastSystemUpgradeDate {
 		//system is already up to date
 		rlog.Info("System is already up to date")
 		return
 	}
 	core.SystemUpgrade()
+	s.writePersistentData()
 }
 
 func (s *CoreService) startServices() {
-	pkg.StartServices(s.services)
+	pkg.StartServices(s.Services)
 }
 
 //Run service mainloop
@@ -324,7 +340,7 @@ func (s *CoreService) Run() error {
 		case serviceEvent := <-s.events:
 			switch serviceEvent {
 			case ActionDump:
-				if s.isConfigured {
+				if s.IsConfigured {
 					s.sendDump()
 				} else {
 					s.sendHello()
@@ -336,18 +352,19 @@ func (s *CoreService) Run() error {
 				switch eventType {
 				case network.EventServerReload:
 					if event.IsConfigured != nil {
-						s.isConfigured = *event.IsConfigured
+						s.IsConfigured = *event.IsConfigured
 					}
-					if !s.isConfigured {
+					if !s.IsConfigured {
 						//a reset is performed
+						s.writePersistentData()
 						continue
 					}
 					//In this case reload == setup
 					s.updateConfiguration(event)
-					s.isConfigured = true
+					s.IsConfigured = true
 
 				case network.EventServerSetup:
-					s.isConfigured = true
+					s.IsConfigured = true
 					s.systemUpdate(event)
 					s.packagesInstall(event)
 					s.updateServicesConfiguration()
@@ -355,7 +372,7 @@ func (s *CoreService) Run() error {
 					// s.updateConfiguration(event)
 
 				case network.EventServerRemove:
-					if !s.isConfigured {
+					if !s.IsConfigured {
 						//a reset is performed
 						continue
 					}
