@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	group "github.com/energieip/common-group-go/pkg/groupmodel"
 	"github.com/energieip/common-led-go/pkg/driverled"
 	"github.com/energieip/common-sensor-go/pkg/driversensor"
 	pkg "github.com/energieip/common-service-go/pkg/service"
@@ -40,7 +39,7 @@ type CoreService struct {
 	timerDump             time.Duration //in seconds
 	ip                    string
 	isConfigured          bool
-	groups                map[int]group.GroupRuntime
+	groups                map[int]bool
 	services              map[string]pkg.Service
 	lastSystemUpgradeDate string
 	isBusy                bool //an activity is performed
@@ -48,7 +47,7 @@ type CoreService struct {
 
 //Initialize service
 func (s *CoreService) Initialize(confFile string) error {
-	s.groups = make(map[int]group.GroupRuntime)
+	s.groups = make(map[int]bool)
 	s.services = make(map[string]pkg.Service)
 	s.isBusy = false
 	s.lastSystemUpgradeDate = core.GetLastSystemUpgradeDate()
@@ -201,71 +200,28 @@ func (s *CoreService) updateConfiguration(switchConfig deviceswitch.SwitchConfig
 		s.local.SendCommand(url, sensorDump)
 	}
 
-	deleteGroups := make(map[int]*group.GroupRuntime)
-	updateGroups := make(map[int]group.GroupRuntime)
-	addGroups := make(map[int]group.GroupRuntime)
-	for grID, gr := range switchConfig.Groups {
-		val, ok := s.groups[grID]
-		if ok {
-			newGr := core.UpdateGroup(s.db, s.mac, val, gr)
-			if newGr != nil {
-				s.groups[grID] = *newGr
-				updateGroups[grID] = *newGr
-			} else {
-				deleteGroups[grID] = nil
-				delete(s.groups, grID)
-			}
-		} else {
-			newGr := core.CreateGroup(s.db, s.mac, gr)
-			if newGr != nil {
-				s.groups[grID] = *newGr
-				addGroups[grID] = s.groups[grID]
-			}
+	for grID := range switchConfig.Groups {
+		_, ok := s.groups[grID]
+		if !ok {
+			s.groups[grID] = true
 		}
 	}
-	if len(addGroups) > 0 {
-		url := "/write/switch/group/setup/config"
-		inrec, err := json.Marshal(addGroups)
-		if err == nil {
-			dump := string(inrec[:])
-			err = s.local.SendCommand(url, dump)
-			if err != nil {
-				rlog.Error("Cannot send added config to group service " + err.Error())
-			} else {
-				rlog.Info("Configuration added has been sent to the group service")
-			}
-		}
-	}
-	if len(updateGroups) > 0 {
+	if len(switchConfig.Groups) > 0 {
 		url := "/write/switch/group/update/settings"
-		inrec, err := json.Marshal(updateGroups)
+		inrec, err := json.Marshal(switchConfig.Groups)
 		if err == nil {
 			dump := string(inrec[:])
-			err = s.local.SendCommand(url, dump)
-			if err != nil {
-				rlog.Error("Cannot send updated config to group service " + err.Error())
-			} else {
-				rlog.Info("Configuration updated has been sent to the group service")
-			}
-		}
-	}
-	if len(deleteGroups) > 0 {
-		url := "/remove/switch/group/update/settings"
-		inrec, err := json.Marshal(deleteGroups)
-		if err == nil {
-			dump := string(inrec[:])
-			err = s.local.SendCommand(url, dump)
-			if err != nil {
-				rlog.Error("Cannot send remove config to group service " + err.Error())
-			} else {
-				rlog.Info("Configuration remove has been sent to the group service")
-			}
+			s.local.SendCommand(url, dump)
 		}
 	}
 }
 
 func (s *CoreService) removeConfiguration(switchConfig deviceswitch.SwitchConfig) {
-	for _, group := range switchConfig.Groups {
+	for grID, group := range switchConfig.Groups {
+		_, ok := s.groups[grID]
+		if ok {
+			delete(s.groups, grID)
+		}
 		dump, _ := group.ToJSON()
 		url := "/remove/switch/group/update/settings"
 		s.local.SendCommand(url, dump)

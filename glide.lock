@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2018-12-31T09:50:07.105837589+01:00
+updated: 2019-01-02T14:43:04.530318134+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 62661b46c4093e2c1f38d943e663db1a29873e80
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - pkg/database
 - name: github.com/energieip/common-group-go
-  version: 2db0a8a8faf5f0026b99af18c74a3fed0ca89517
+  version: 3582e5cb93d13bd77c8afd71c4a9645254dc1f4f
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go

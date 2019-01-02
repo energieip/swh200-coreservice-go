@@ -3,6 +3,7 @@ package network
 import (
 	genericNetwork "github.com/energieip/common-network-go/pkg/network"
 	pkg "github.com/energieip/common-service-go/pkg/service"
+	"github.com/romana/rlog"
 )
 
 //LocalNetwork network object
@@ -43,5 +44,11 @@ func (net LocalNetwork) Disconnect() {
 
 //SendCommand to driver brokers
 func (net LocalNetwork) SendCommand(topic, content string) error {
-	return net.Iface.SendCommand(topic, content)
+	err := net.Iface.SendCommand(topic, content)
+	if err != nil {
+		rlog.Error("Cannot send : " + content + "on: " + topic + " Error: " + err.Error())
+	} else {
+		rlog.Info("Send : " + content + "on: " + topic)
+	}
+	return err
 }

@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/energieip/common-database-go/pkg/database"
-	"github.com/energieip/common-group-go/pkg/groupmodel"
+	gm "github.com/energieip/common-group-go/pkg/groupmodel"
 	led "github.com/energieip/common-led-go/pkg/driverled"
 	sensor "github.com/energieip/common-sensor-go/pkg/driversensor"
 	"github.com/romana/rlog"
@@ -101,13 +101,13 @@ func GetLed(db Database, mac string) *led.Led {
 }
 
 //GetStatusGroup return the switch groups
-func GetStatusGroup(db Database, runGroup map[int]groupmodel.GroupRuntime) map[int]groupmodel.GroupStatus {
-	groups := make(map[int]groupmodel.GroupStatus)
-	groupsStored, err := db.FetchAllRecords(groupmodel.DbStatusName, groupmodel.TableStatusName)
+func GetStatusGroup(db Database, runGroup map[int]bool) map[int]gm.GroupStatus {
+	groups := make(map[int]gm.GroupStatus)
+	groupsStored, err := db.FetchAllRecords(gm.DbStatusName, gm.TableStatusName)
 
 	if err == nil && groupsStored != nil {
 		for _, v := range groupsStored {
-			group, err := groupmodel.ToGroupStatus(v)
+			group, err := gm.ToGroupStatus(v)
 			if err != nil {
 				continue
 			}
