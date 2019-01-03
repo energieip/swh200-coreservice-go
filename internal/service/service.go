@@ -105,6 +105,7 @@ func (s *CoreService) Initialize(confFile string) error {
 	}
 
 	go s.server.RemoteServerConnection(*conf, clientID, s.Mac)
+	s.startServices()
 	rlog.Info("SwitchCore service started")
 	return nil
 }

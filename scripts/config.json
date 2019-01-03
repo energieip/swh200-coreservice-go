@@ -14,5 +14,6 @@
             "connectors": []
         }
     },
-    "logLevel": "INFO"
+    "logLevel": "INFO",
+    "persistenceDataPath": "/etc/energieip-swh200-core/data.json"
 }
