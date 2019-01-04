@@ -43,6 +43,7 @@ type CoreService struct {
 	Services              map[string]pkg.Service `json:"services"`
 	LastSystemUpgradeDate string                 `json:"lastSystemUpgradeDate"`
 	persistentDataPath    string
+	FriendlyName          string `json:"friendlyName"`
 }
 
 //Initialize service
@@ -151,6 +152,7 @@ func (s *CoreService) sendDump() {
 	status.IsConfigured = &s.IsConfigured
 	status.LastSystemUpgradeDate = s.LastSystemUpgradeDate
 	status.Topic = "switch/" + s.Mac
+	status.FriendlyName = s.FriendlyName
 	services := make(map[string]pkg.ServiceStatus)
 
 	for _, c := range s.Services {
@@ -361,11 +363,13 @@ func (s *CoreService) Run() error {
 						continue
 					}
 					//In this case reload == setup
+					s.FriendlyName = event.FriendlyName
 					s.updateConfiguration(event)
 					s.IsConfigured = true
 
 				case network.EventServerSetup:
 					s.IsConfigured = true
+					s.FriendlyName = event.FriendlyName
 					s.systemUpdate(event)
 					s.packagesInstall(event)
 					s.updateServicesConfiguration()
