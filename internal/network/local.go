@@ -28,11 +28,15 @@ func CreateLocalNetwork() (*LocalNetwork, error) {
 func (net LocalNetwork) LocalConnection(conf pkg.ServiceConfig, clientID, switchMac string) error {
 	cbkLocal := make(map[string]func(genericNetwork.Client, genericNetwork.Message))
 	confLocal := genericNetwork.NetworkConfig{
-		IP:         conf.LocalBroker.IP,
-		Port:       conf.LocalBroker.Port,
-		ClientName: clientID,
-		Callbacks:  cbkLocal,
-		LogLevel:   conf.LogLevel,
+		IP:               conf.LocalBroker.IP,
+		Port:             conf.LocalBroker.Port,
+		ClientName:       clientID,
+		Callbacks:        cbkLocal,
+		LogLevel:         conf.LogLevel,
+		User:             conf.LocalBroker.Login,
+		Password:         conf.LocalBroker.Password,
+		ClientKey:        conf.LocalBroker.KeyPath,
+		ServerCertificat: conf.LocalBroker.CaPath,
 	}
 	return net.Iface.Initialize(confLocal)
 }

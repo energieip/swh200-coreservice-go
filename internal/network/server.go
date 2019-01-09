@@ -44,11 +44,15 @@ func (net ServerNetwork) RemoteServerConnection(conf pkg.ServiceConfig, clientID
 	cbkServer["/remove/switch/"+switchMac+"/update/settings"] = net.onRemoveSetting
 
 	confServer := genericNetwork.NetworkConfig{
-		IP:         conf.NetworkBroker.IP,
-		Port:       conf.NetworkBroker.Port,
-		ClientName: clientID,
-		Callbacks:  cbkServer,
-		LogLevel:   conf.LogLevel,
+		IP:               conf.NetworkBroker.IP,
+		Port:             conf.NetworkBroker.Port,
+		ClientName:       clientID,
+		Callbacks:        cbkServer,
+		LogLevel:         conf.LogLevel,
+		User:             conf.NetworkBroker.Login,
+		Password:         conf.NetworkBroker.Password,
+		ClientKey:        conf.NetworkBroker.KeyPath,
+		ServerCertificat: conf.NetworkBroker.CaPath,
 	}
 
 	for {

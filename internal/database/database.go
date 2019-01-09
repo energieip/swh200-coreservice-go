@@ -36,7 +36,7 @@ func GetSwitchLeds(db Database, switchMac string) map[string]led.Led {
 
 	criteria := make(map[string]interface{})
 	criteria["SwitchMac"] = switchMac
-	ledsStored, err := db.GetRecords(led.DbName, led.TableName, criteria)
+	ledsStored, err := db.GetRecords(led.DbStatus, led.TableName, criteria)
 
 	if err == nil && ledsStored != nil {
 		for _, v := range ledsStored {
@@ -89,7 +89,7 @@ func GetSensor(db Database, mac string) *sensor.Sensor {
 func GetLed(db Database, mac string) *led.Led {
 	criteria := make(map[string]interface{})
 	criteria["Mac"] = mac
-	ledStored, err := db.GetRecord(led.DbName, led.TableName, criteria)
+	ledStored, err := db.GetRecord(led.DbStatus, led.TableName, criteria)
 	if err != nil || ledStored == nil {
 		return nil
 	}
