@@ -1,5 +1,5 @@
 hash: 0aeb23401dbd96db3c4f8cf230d1a81c4b3ea7ad31cc4d975d7c52c7ff18143f
-updated: 2019-01-09T17:10:51.4648952+01:00
+updated: 2019-01-10T19:13:42.015397454+01:00
 imports:
 - name: github.com/cenkalti/backoff
   version: 1e4cf3da559842a91afcb6ea6141451e6c30c618
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - pkg/groupmodel
 - name: github.com/energieip/common-led-go
-  version: 098e37e87be041771aaf6095a7dffe2606ec3c17
+  version: 75eb3606a120161dce107493fbc879c39f1efd35
   subpackages:
   - pkg/driverled
 - name: github.com/energieip/common-network-go
@@ -24,7 +24,7 @@ imports:
   subpackages:
   - pkg/network
 - name: github.com/energieip/common-sensor-go
-  version: 376d97c688b9bbeef2a98192356dcbb971b20f8b
+  version: cf9b1998de8279a06f535d786c276cb5f411a9c1
   subpackages:
   - pkg/driversensor
 - name: github.com/energieip/common-service-go
@@ -35,6 +35,10 @@ imports:
   version: 5f66b4d452e2efb6c251351d580fe42e8dff00de
   subpackages:
   - pkg/deviceswitch
+- name: github.com/energieip/common-tools-go
+  version: e984ad0511951c4e76e0145ed686128121575be8
+  subpackages:
+  - pkg/tools
 - name: github.com/golang/protobuf
   version: 347cf4a86c1cb8d262994d8ef5924d4576c5b331
   subpackages:
@@ -58,7 +62,7 @@ imports:
   - pbkdf2
   - ssh/terminal
 - name: golang.org/x/net
-  version: 1e06a53dbb7e2ed46e91183f219db23c6943c532
+  version: be1c187aa6c66b9daa1d9461c228d17e9dd2cab7
   subpackages:
   - context
   - internal/socks
